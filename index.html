@@ -24,11 +24,7 @@ header{background:var(--asphalt);color:#fff;padding:16px 18px 14px;display:flex;
 .psign{flex:none;width:46px;height:46px;border-radius:8px;background:var(--sign);display:grid;place-items:center;
   font-family:"Zen Kaku Gothic New";font-weight:700;font-size:28px;line-height:1;box-shadow:inset 0 0 0 3px #fff, 0 0 0 2px var(--sign)}
 header h1{margin:0;font-family:"Zen Old Mincho",serif;font-weight:500;font-size:22px;letter-spacing:.12em;line-height:1.3}
-header p{margin:3px 0 0;font-size:11.5px;color:#b8c3cf;line-height:1.5}
-header p a{color:#9dc0ff;text-decoration:underline dotted;text-underline-offset:2px}
-header p a:hover{text-decoration:underline solid;color:#cfe0ff}
-.card a.lnk{color:inherit;text-decoration:none}
-.card a.lnk:hover{border-color:var(--sign);color:var(--sign)}
+header p{margin:3px 0 0;font-size:11.5px;color:#b8c3cf}
 .controls{padding:12px 14px 10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
 .search{position:relative}
 .search input{width:100%;padding:10px 12px 10px 36px;border:1.5px solid var(--line);border-radius:var(--r);font:inherit;font-size:14px;background:var(--paper)}
@@ -118,7 +114,7 @@ main{position:relative;min-height:0}
       <div class="psign" aria-hidden="true">P</div>
       <div>
         <h1>EV割引駐車場マップ</h1>
-        <p>東京都「<a href="https://www.kankyo.metro.tokyo.lg.jp/documents/d/kankyo/2026-03-25-131707-120" target="_blank" rel="noopener">低公害・低燃費車割引駐車場一覧</a>」（令和8年4月1日時点）より、時間貸・1日貸の施設</p>
+        <p>東京都「低公害・低燃費車割引駐車場一覧」（令和8年4月1日時点）より、時間貸・1日貸の施設</p>
       </div>
     </header>
     <div class="controls">
@@ -242,7 +238,7 @@ P080,新河岸東公園駐車場,時間貸,PDF原本を画像化し○印の位�
 
 /* ---------- 列名（スプレッドシートの1行目と一致させる） ---------- */
 const COL = {id:"ID",name:"名称",kubun:"利用区分",addr:"住所",city:"所在区市町村",lat:"緯度",lng:"経度",mgr:"管理会社",tel:"連絡先",
-  rank:"対象ランク",amt:"割引額",time:"割引時間",mode:"割引方式",how:"利用方法",docs:"必要書類",pre:"事前申請要否",preUrl:"事前申請PDF",url:"公式URL",
+  rank:"対象ランク",amt:"割引額",time:"割引時間",mode:"割引方式",how:"利用方法",docs:"必要書類",pre:"事前申請要否",url:"公式URL",
   src:"情報源(PDF記載/公式サイト確認/未確認)",note:"状態備考",page:"出典ページ",date:"最終確認日",pub:"掲載可否",status:"状態",conf:"確からしさ"};
 
 const MODES = [
@@ -299,7 +295,7 @@ function prepare(data){
       const lat=parseFloat(r[COL.lat]), lng=parseFloat(r[COL.lng]);
       return {...r, _id:(r[COL.id]||("R"+i)).trim(), _lat:lat, _lng:lng, _geo:isFinite(lat)&&isFinite(lng),
         _mode:normMode(r), _status:normStatus(r), _conf:normConf(r),
-        _pre:/^要/.test((r[COL.pre]||"").trim()), _preUrl:(r[COL.preUrl]||"").trim(),
+        _pre:/^要/.test((r[COL.pre]||"").trim()),
         _hay:[r[COL.name],r[COL.addr],r[COL.city],r[COL.mgr]].join(" ").toLowerCase()};
     });
 }
@@ -316,7 +312,7 @@ function loadCSV(){
     complete:res=>{
       const d=prepare(res.data||[]);
       if(!d.length){ useFallback("組み込みデータ（CSVが空・列名不一致）"); return; }
-      start(d,"スプレッドシート（"+d.length+"件）",true);
+      start(d,"外部CSVを読み込み中（"+d.length+"件）",true);
     },
     error:()=>useFallback("組み込みデータ（CSV読み込み失敗）")});
 }
@@ -332,7 +328,7 @@ function chip(container,key,label,color,count){
 
 function start(data,label,live){
   rows=data;
-  const src=$("#src"); src.textContent=label; src.classList.toggle("fb",!live);
+  const src=$("#src"); src.textContent=label; src.style.display=live?"":"none";
   MODES.forEach(m=>chip($("#f-mode"),"mode",m.k,m.c,rows.filter(r=>r._mode===m.k).length));
   STATUSES.forEach(s=>chip($("#f-status"),"status",s,null,rows.filter(r=>r._status===s).length));
   CONFS.forEach(c=>chip($("#f-conf"),"conf",c.k,null,rows.filter(r=>r._conf===c.k).length));
@@ -406,7 +402,7 @@ function render(fit){
       <h3>${esc(r[COL.name])} ${st}</h3>
       <div class="addr">${esc(r[COL.addr])}　<span style="opacity:.8">${esc(r[COL.mgr])}</span></div>
       <div class="disc${isUnk(r)?" unk":""}">${esc(discLine(r))}</div>
-      <div class="tags"><span class="tag">${esc(r._mode)}</span><span class="tag">${esc(r[COL.kubun]||"")}</span><span class="tag ${c.cls}">${esc(r._conf)}</span>${r._pre?(r._preUrl?`<a class="tag pdf lnk" href="${esc(r._preUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">事前申請が必要・申請用PDF ↗</a>`:'<span class="tag pdf">事前申請が必要</span>'):""}${r._geo?"":'<span class="tag unk">座標なし</span>'}</div>
+      <div class="tags"><span class="tag">${esc(r._mode)}</span><span class="tag">${esc(r[COL.kubun]||"")}</span><span class="tag ${c.cls}">${esc(r._conf)}</span>${/要/.test(r[COL.pre]||"")&&!/不要/.test(r[COL.pre]||"")?'<span class="tag pdf">事前申請が必要</span>':""}${r._geo?"":'<span class="tag unk">座標なし</span>'}</div>
     </div>`;}).join("");
   list.querySelectorAll(".card").forEach(el=>{
     const go=()=>select(el.dataset.id,true);
@@ -449,7 +445,7 @@ function popup(r){
       ${row("割引方式",esc(r._mode))}
       ${row("利用方法",esc(r[COL.how]))}
       ${row("必要書類",esc(r[COL.docs]))}
-      ${row("事前申請",esc(r[COL.pre])+(r._preUrl?`　<a href="${esc(r._preUrl)}" target="_blank" rel="noopener">申請用PDFを開く ↗</a>`:""))}
+      ${row("事前申請",esc(r[COL.pre]))}
       ${row("状態備考",esc(r[COL.note]))}
       ${row("公式URL",u?`<a href="${esc(u)}" target="_blank" rel="noopener">公式ページを開く ↗</a>`:"公式ページ未発見")}
     </dl>
