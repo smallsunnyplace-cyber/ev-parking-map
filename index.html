@@ -6,7 +6,7 @@
 <title>EV割引駐車場マップ｜東京都 低公害・低燃費車割引駐車場（テスト版）</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
   --asphalt:#1c2530; --asphalt-2:#2a3542; --paper:#f6f8fa; --line:#dfe4ea;
@@ -23,7 +23,7 @@ aside{display:flex;flex-direction:column;min-height:0;background:#fff;border-rig
 header{background:var(--asphalt);color:#fff;padding:16px 18px 14px;display:flex;gap:14px;align-items:center}
 .psign{flex:none;width:46px;height:46px;border-radius:8px;background:var(--sign);display:grid;place-items:center;
   font-family:"Zen Kaku Gothic New";font-weight:700;font-size:28px;line-height:1;box-shadow:inset 0 0 0 3px #fff, 0 0 0 2px var(--sign)}
-header h1{margin:0;font-family:"Shippori Mincho B1",serif;font-weight:700;font-size:21px;letter-spacing:.1em;line-height:1.25}
+header h1{margin:0;font-family:"Zen Old Mincho",serif;font-weight:500;font-size:22px;letter-spacing:.12em;line-height:1.3}
 header p{margin:3px 0 0;font-size:11.5px;color:#b8c3cf}
 .controls{padding:12px 14px 10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
 .search{position:relative}
@@ -96,7 +96,7 @@ main{position:relative;min-height:0}
   aside{grid-row:2;border-right:0}
   #list{overflow:visible}
   header{padding:12px 14px}
-  header h1{font-size:18px}
+  header h1{font-size:18.5px}
   .psign{width:38px;height:38px;font-size:23px}
   .legend{bottom:10px;right:8px;padding:6px 9px;font-size:11px}
   .legend .body{display:none}
@@ -151,7 +151,7 @@ main{position:relative;min-height:0}
    空欄または読み込み失敗時は、下の組み込みデータ（調査済みCSV）で動作します。
    URL末尾に ?csv=<URL> を付けて一時的に差し替えることもできます。
    ============================================================ */
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIAKrC7vIGi23xSg4ydPPwL84FEVOH-g-gHflAn7cHLKLIj9r1jokBKaXS3aBxMZJXzWe9vh5IQwOq/pub?gid=0&single=true&output=csv";
+const CSV_URL = "";
 
 const FALLBACK_CSV = `ID,名称,利用区分,利用区分の判定根拠,所在区市町村,住所,緯度,経度,管理会社,連絡先,対象ランク,割引額,割引時間,割引方式,利用方法,必要書類,事前申請要否,公式URL,情報源(PDF記載/公式サイト確認/未確認),状態備考,出典ページ,最終確認日,掲載可否,状態,確からしさ,座標根拠
 P001,東京都八重洲,時間貸（定期制も併設）,PDF原本を画像化し○印の位置を目視解析（テキスト抽出は○印欠落のため不採用）。公式料金表でも時間貸を確認,中央,中央区京橋１－１０－１地先,35.678913,139.772371,（公財）東京都道路整備保全公社,03-3567-3653,G,最初の1時間無料,最初の1時間,無料時間制,駐車後、駐車券と車検証を持って管理室へ（24時間係員常駐）,車検証,不要（当日、現地で申し出）,https://www.tmpc.or.jp/04_parking/tokyo/tp_yaesu.html,割引内容・利用方法：公式サイト確認／利用区分：PDF画像解析,"時間制 8-20時250円/30分・20-8時250円/60分、12時間最大3,000円。都環境局PDFでは令和7年度にGランクへ引上げ",PDF p.1,2026-09-25,掲載,稼働中,公式サイト/サービスセンターで確認済,TMPC公式ページのGoogleMapリンク座標
